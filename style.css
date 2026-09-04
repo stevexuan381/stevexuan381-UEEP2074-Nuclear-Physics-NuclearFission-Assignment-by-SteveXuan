@@ -307,3 +307,286 @@ body::after{
     height:235px !important;
   }
 }
+
+
+/* =========================================================
+   FISSIONQUEST V4.3.2 — 2D LAB + NUCLEUS TUTOR REPAIR
+   ========================================================= */
+
+/* ---------- 2D FISSION LAB ---------- */
+.fission-lab{
+  overflow:hidden;
+}
+
+.fission-stage{
+  position:relative !important;
+  overflow:hidden !important;
+  min-height:390px;
+}
+
+/* Exact current HTML class names */
+.fission-stage .incoming-neutron{
+  position:absolute !important;
+  left:3% !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  z-index:4;
+}
+
+.fission-stage .u235{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%) !important;
+  z-index:4;
+}
+
+.fission-stage .frag{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%);
+  width:70px !important;
+  height:70px !important;
+  border-radius:50%;
+  display:grid !important;
+  place-items:center;
+  opacity:0;
+  z-index:5;
+  background:radial-gradient(circle at 32% 28%,#ffd777,#d1772d 50%,#7c3414);
+  color:#fff;
+  font-weight:900;
+  box-shadow:0 0 24px rgba(255,170,85,.25);
+}
+
+.fission-stage .outn{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%);
+  width:30px !important;
+  height:30px !important;
+  border-radius:50%;
+  display:grid !important;
+  place-items:center;
+  opacity:0;
+  z-index:6;
+  background:radial-gradient(circle at 30% 30%,#fff,#93aab6 38%,#35434a);
+  color:#fff;
+  font-weight:800;
+  box-shadow:0 0 16px rgba(88,228,255,.65);
+}
+
+.fission-stage .burst{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%);
+  width:24px !important;
+  height:24px !important;
+  border-radius:50%;
+  opacity:0;
+  z-index:3;
+  background:#ffd766;
+  box-shadow:0 0 28px #ffd766,0 0 75px rgba(255,215,102,.65);
+}
+
+/* Run sequence */
+.fission-stage.run .incoming-neutron{
+  animation:fqIncomingNeutron .72s ease-in forwards !important;
+}
+
+.fission-stage.run .u235{
+  animation:fqU235Shake .72s .58s ease-in-out forwards !important;
+}
+
+.fission-stage.run .burst{
+  animation:fqFissionBurst .72s .75s ease-out forwards !important;
+}
+
+.fission-stage.run .fa{
+  animation:fqFragA 1.25s .92s ease-out forwards !important;
+}
+
+.fission-stage.run .fb{
+  animation:fqFragB 1.25s .92s ease-out forwards !important;
+}
+
+.fission-stage.run .n1{
+  animation:fqOutN1 1.25s .9s ease-out forwards !important;
+}
+
+.fission-stage.run .n2{
+  animation:fqOutN2 1.25s .9s ease-out forwards !important;
+}
+
+.fission-stage.run .n3{
+  animation:fqOutN3 1.25s .9s ease-out forwards !important;
+}
+
+/* clean resting state */
+.fission-stage:not(.run) .frag,
+.fission-stage:not(.run) .outn,
+.fission-stage:not(.run) .burst{
+  opacity:0 !important;
+  animation:none !important;
+}
+
+@keyframes fqIncomingNeutron{
+  0%{left:3%;opacity:1}
+  82%{left:46%;opacity:1}
+  100%{left:49%;opacity:0}
+}
+
+@keyframes fqU235Shake{
+  0%{transform:translate(-50%,-50%) scale(1)}
+  25%{transform:translate(-49%,-50%) scale(1.04)}
+  50%{transform:translate(-51%,-50%) scale(1.08)}
+  75%{transform:translate(-49%,-50%) scale(1.05)}
+  100%{transform:translate(-50%,-50%) scale(.15);opacity:0}
+}
+
+@keyframes fqFissionBurst{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+  35%{opacity:1;transform:translate(-50%,-50%) scale(4)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(9)}
+}
+
+@keyframes fqFragA{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}
+  15%{opacity:1}
+  100%{opacity:1;transform:translate(-240%,-115%) scale(1)}
+}
+
+@keyframes fqFragB{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}
+  15%{opacity:1}
+  100%{opacity:1;transform:translate(140%,18%) scale(1)}
+}
+
+@keyframes fqOutN1{
+  0%{opacity:0;transform:translate(-50%,-50%)}
+  15%{opacity:1}
+  100%{opacity:1;transform:translate(520%,-450%)}
+}
+
+@keyframes fqOutN2{
+  0%{opacity:0;transform:translate(-50%,-50%)}
+  15%{opacity:1}
+  100%{opacity:1;transform:translate(620%,180%)}
+}
+
+@keyframes fqOutN3{
+  0%{opacity:0;transform:translate(-50%,-50%)}
+  15%{opacity:1}
+  100%{opacity:1;transform:translate(-720%,300%)}
+}
+
+/* ---------- NUCLEUS TUTOR ---------- */
+.tutor-wrap{
+  overflow:hidden;
+}
+
+.tutor-wrap > aside{
+  padding:24px !important;
+  border-right:1px solid rgba(255,255,255,.06);
+  background:linear-gradient(180deg,rgba(88,228,255,.03),rgba(255,255,255,.01));
+}
+
+.tutor-wrap > aside .suggestion{
+  display:block;
+  width:100%;
+  margin:8px 0 0;
+}
+
+.tutor-wrap .chat{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+
+#chatLog{
+  min-height:360px;
+  max-height:510px;
+  overflow-y:auto !important;
+  scroll-behavior:smooth;
+  padding:18px;
+}
+
+.msg{
+  max-width:84%;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
+.msg.user{
+  margin-left:auto;
+}
+
+#chatForm{
+  display:flex !important;
+  gap:10px;
+  padding:14px;
+  border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(4,11,16,.72);
+}
+
+#chatInput{
+  flex:1 1 auto;
+  min-width:0;
+  width:auto !important;
+  border:1px solid var(--border);
+  background:#071219;
+  color:var(--text);
+  border-radius:10px;
+  padding:12px 14px;
+  outline:none;
+}
+
+#chatInput:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(88,228,255,.07);
+}
+
+#chatForm .btn{
+  flex:0 0 auto;
+}
+
+.msg.typing p::after{
+  content:"";
+  display:inline-block;
+  width:24px;
+  height:7px;
+  margin-left:5px;
+  vertical-align:middle;
+  background:
+    radial-gradient(circle,#58e4ff 2px,transparent 3px) 0 50%/8px 8px repeat-x;
+  animation:fqTyping .8s linear infinite;
+}
+
+@keyframes fqTyping{
+  0%,100%{opacity:.25}
+  50%{opacity:1}
+}
+
+@media(max-width:800px){
+  .tutor-wrap > aside{
+    border-right:0;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .fission-stage{
+    min-height:320px;
+  }
+}
+
+@media(max-width:520px){
+  #chatForm{
+    flex-direction:column;
+  }
+  #chatForm .btn{
+    width:100%;
+  }
+  .fission-stage{
+    min-height:280px;
+  }
+}
