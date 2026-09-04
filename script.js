@@ -83,7 +83,7 @@ let audioCtx,nodes=[];$("#musicBtn")?.addEventListener("click",e=>{if(nodes.leng
 if($("#fireFission")){
   let busy=false;
   let resetTimer=null;
-  let neutronFlight=null;
+  let flightRAF=null;
 
   const stage=$("#fissionStage");
   const readout=$("#fissionReadout");
@@ -92,25 +92,22 @@ if($("#fireFission")){
   const target=stage.querySelector(".u235");
 
   function cancelFlight(){
-    if(neutronFlight){
-      try{ neutronFlight.cancel(); }catch(e){}
-      neutronFlight=null;
+    if(flightRAF){
+      cancelAnimationFrame(flightRAF);
+      flightRAF=null;
     }
   }
 
-  function placeNeutronAtStart(){
-    const stageRect=stage.getBoundingClientRect();
+  function setImportant(el,prop,value){
+    el.style.setProperty(prop,value,"important");
+  }
 
-    // Fixed launch position inside the lab.
-    const startX=Math.max(58, stage.clientWidth * 0.045);
-    const startY=stage.clientHeight * 0.50;
+  function clearImportant(el,prop){
+    el.style.removeProperty(prop);
+  }
 
-    incoming.style.left=startX+"px";
-    incoming.style.top=startY+"px";
-    incoming.style.transform="translate(-50%,-50%)";
-    incoming.style.opacity="1";
-
-    return {stageRect,startX,startY};
+  function resetNeutronStyles(){
+    ["left","top","transform","opacity"].forEach(p=>clearImportant(incoming,p));
   }
 
   function resetFissionLab(){
@@ -121,12 +118,7 @@ if($("#fireFission")){
 
     cancelFlight();
     stage.classList.remove("run","impact");
-
-    incoming.style.left="";
-    incoming.style.top="";
-    incoming.style.transform="";
-    incoming.style.opacity="";
-
+    resetNeutronStyles();
     void stage.offsetWidth;
 
     readout.textContent="STATUS: READY";
@@ -135,48 +127,64 @@ if($("#fireFission")){
   }
 
   function launchNeutron(){
-    const {stageRect,startX,startY}=placeNeutronAtStart();
-
-    // Measure U-235 center relative to the fission stage.
+    const stageRect=stage.getBoundingClientRect();
     const targetRect=target.getBoundingClientRect();
+
+    // Start point: left side, vertically aligned with target.
+    const startX=Math.max(58, stage.clientWidth*0.045);
     const targetX=(targetRect.left-stageRect.left)+(targetRect.width/2);
     const targetY=(targetRect.top-stageRect.top)+(targetRect.height/2);
+    const startY=targetY;
 
-    // Animate physical coordinates, not transform/calc().
-    neutronFlight=incoming.animate(
-      [
-        {
-          left:startX+"px",
-          top:startY+"px",
-          opacity:1,
-          transform:"translate(-50%,-50%) scale(1)"
-        },
-        {
-          left:(startX+(targetX-startX)*0.72)+"px",
-          top:(startY+(targetY-startY)*0.72)+"px",
-          opacity:1,
-          transform:"translate(-50%,-50%) scale(1.08)"
-        },
-        {
-          left:targetX+"px",
-          top:targetY+"px",
-          opacity:0,
-          transform:"translate(-50%,-50%) scale(.65)"
-        }
-      ],
-      {
-        duration:850,
-        easing:"cubic-bezier(.28,.02,.68,1)",
-        fill:"forwards"
-      }
-    );
+    setImportant(incoming,"left",startX+"px");
+    setImportant(incoming,"top",startY+"px");
+    setImportant(incoming,"transform","translate(-50%,-50%) scale(1)");
+    setImportant(incoming,"opacity","1");
 
-    neutronFlight.onfinish=()=>{
+    const duration=900;
+    const startTime=performance.now();
+
+    // Smooth acceleration/deceleration.
+    function easeInOut(t){
+      return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+    }
+
+    function frame(now){
       if(!busy) return;
-      stage.classList.add("impact");
-      readout.textContent="STATUS: NEUTRON ABSORBED";
-      setTimeout(()=>stage.classList.remove("impact"),260);
-    };
+
+      const raw=Math.min(1,(now-startTime)/duration);
+      const p=easeInOut(raw);
+
+      const x=startX+(targetX-startX)*p;
+      const y=startY+(targetY-startY)*p;
+      const scale=1 + Math.sin(Math.PI*p)*0.10;
+
+      setImportant(incoming,"left",x+"px");
+      setImportant(incoming,"top",y+"px");
+      setImportant(incoming,"transform",`translate(-50%,-50%) scale(${scale})`);
+
+      if(raw<0.92){
+        setImportant(incoming,"opacity","1");
+      }else{
+        const fade=Math.max(0,1-(raw-0.92)/0.08);
+        setImportant(incoming,"opacity",String(fade));
+      }
+
+      if(raw<1){
+        flightRAF=requestAnimationFrame(frame);
+      }else{
+        flightRAF=null;
+        setImportant(incoming,"left",targetX+"px");
+        setImportant(incoming,"top",targetY+"px");
+        setImportant(incoming,"opacity","0");
+
+        stage.classList.add("impact");
+        readout.textContent="STATUS: NEUTRON ABSORBED";
+        setTimeout(()=>stage.classList.remove("impact"),260);
+      }
+    }
+
+    flightRAF=requestAnimationFrame(frame);
   }
 
   fireBtn.addEventListener("click",()=>{
@@ -187,37 +195,34 @@ if($("#fireFission")){
 
     cancelFlight();
     stage.classList.remove("run","impact");
-    incoming.style.left="";
-    incoming.style.top="";
-    incoming.style.transform="";
-    incoming.style.opacity="";
+    resetNeutronStyles();
     void stage.offsetWidth;
 
     readout.textContent="STATUS: NEUTRON APPROACHING";
     stage.classList.add("run");
 
-    // Let layout settle for one frame before measuring positions.
+    // Wait one frame so the stage has settled before measuring.
     requestAnimationFrame(()=>{
       if(busy) launchNeutron();
     });
 
     setTimeout(()=>{
       if(busy) readout.textContent="STATUS: NUCLEUS DEFORMING";
-    },900);
+    },980);
 
     setTimeout(()=>{
       if(busy) readout.textContent="STATUS: FISSION — ENERGY + NEUTRONS RELEASED";
-    },1180);
+    },1250);
 
     resetTimer=setTimeout(()=>{
       resetFissionLab();
       showMeme(
         "💥",
         "Fission complete",
-        "The neutron travelled into the U-235 nucleus, was absorbed, and the unstable nucleus split while releasing additional neutrons.",
+        "The neutron travelled into U-235, was absorbed, and the unstable nucleus split while releasing additional neutrons.",
         50
       );
-    },2600);
+    },2750);
   });
 
   window.addEventListener("resize",()=>{

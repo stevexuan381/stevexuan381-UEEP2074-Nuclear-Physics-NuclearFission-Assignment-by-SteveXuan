@@ -626,3 +626,22 @@ body::after{
   z-index:10 !important;
   will-change:left,top,opacity,transform;
 }
+
+
+/* ===== V4.3.6 FORCED NEUTRON MOVEMENT ===== */
+.fission-stage .incoming-neutron{
+  transition:none !important;
+  will-change:left,top,transform,opacity;
+}
+
+.fission-stage::after{
+  content:"";
+  position:absolute;
+  left:6%;
+  right:50%;
+  top:50%;
+  height:1px;
+  background:linear-gradient(90deg,rgba(88,228,255,.05),rgba(88,228,255,.20),transparent);
+  pointer-events:none;
+  opacity:.35;
+}
