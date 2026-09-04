@@ -590,3 +590,27 @@ body::after{
     min-height:280px;
   }
 }
+
+
+/* =========================================================
+   FISSIONQUEST V4.3.4 — EXACT NEUTRON TRAJECTORY
+   ========================================================= */
+
+/* Keep the neutron at its launch point; JS moves it to the
+   actual U-235 centre using measured element coordinates. */
+.fission-stage.run .incoming-neutron{
+  animation:none !important;
+}
+
+/* Make the path visually clearer. */
+.fission-stage .incoming-neutron{
+  will-change:transform,opacity;
+}
+
+/* Small collision glow at the moment of impact. */
+.fission-stage.impact .u235{
+  box-shadow:
+    0 0 45px rgba(255,99,99,.42),
+    0 0 80px rgba(255,215,102,.32),
+    0 0 120px rgba(88,228,255,.18);
+}

@@ -83,49 +83,134 @@ let audioCtx,nodes=[];$("#musicBtn")?.addEventListener("click",e=>{if(nodes.leng
 if($("#fireFission")){
   let busy=false;
   let resetTimer=null;
+  let neutronFlight=null;
+
   const stage=$("#fissionStage");
   const readout=$("#fissionReadout");
   const fireBtn=$("#fireFission");
+  const incoming=stage.querySelector(".incoming-neutron");
+  const target=stage.querySelector(".u235");
+
+  function cancelFlight(){
+    if(neutronFlight){
+      try{ neutronFlight.cancel(); }catch(e){}
+      neutronFlight=null;
+    }
+  }
 
   function resetFissionLab(){
     if(resetTimer){
       clearTimeout(resetTimer);
       resetTimer=null;
     }
-    stage.classList.remove("run");
-    // Force browser reflow so the same CSS animations can replay.
+
+    cancelFlight();
+    stage.classList.remove("run","impact");
+
+    // Clear any inline visual state left by Web Animations.
+    incoming.style.opacity="";
+    incoming.style.transform="";
+
+    // Force browser reflow so the fission sequence can replay.
     void stage.offsetWidth;
+
     readout.textContent="STATUS: READY";
     fireBtn.disabled=false;
     busy=false;
   }
 
+  function launchNeutron(){
+    // Measure both centres in the current responsive layout.
+    const neutronRect=incoming.getBoundingClientRect();
+    const targetRect=target.getBoundingClientRect();
+
+    const neutronCX=neutronRect.left + neutronRect.width/2;
+    const neutronCY=neutronRect.top + neutronRect.height/2;
+    const targetCX=targetRect.left + targetRect.width/2;
+    const targetCY=targetRect.top + targetRect.height/2;
+
+    const dx=targetCX-neutronCX;
+    const dy=targetCY-neutronCY;
+
+    neutronFlight=incoming.animate(
+      [
+        {
+          transform:"translate(0px,-50%) scale(1)",
+          opacity:1,
+          offset:0
+        },
+        {
+          transform:`translate(${dx*0.72}px,calc(-50% + ${dy*0.72}px)) scale(1.08)`,
+          opacity:1,
+          offset:0.68
+        },
+        {
+          transform:`translate(${dx}px,calc(-50% + ${dy}px)) scale(.72)`,
+          opacity:0,
+          offset:1
+        }
+      ],
+      {
+        duration:720,
+        easing:"cubic-bezier(.35,.05,.72,.95)",
+        fill:"forwards"
+      }
+    );
+
+    neutronFlight.onfinish=()=>{
+      if(!busy) return;
+      stage.classList.add("impact");
+      readout.textContent="STATUS: NEUTRON ABSORBED";
+      setTimeout(()=>stage.classList.remove("impact"),260);
+    };
+  }
+
   fireBtn.addEventListener("click",()=>{
     if(busy) return;
+
     busy=true;
     fireBtn.disabled=true;
 
-    stage.classList.remove("run");
+    // Start from a completely clean state.
+    cancelFlight();
+    stage.classList.remove("run","impact");
+    incoming.style.opacity="";
+    incoming.style.transform="";
     void stage.offsetWidth;
-    stage.classList.add("run");
 
     readout.textContent="STATUS: NEUTRON APPROACHING";
-    setTimeout(()=>{ if(busy) readout.textContent="STATUS: NEUTRON ABSORBED"; },560);
-    setTimeout(()=>{ if(busy) readout.textContent="STATUS: NUCLEUS DEFORMING"; },820);
-    setTimeout(()=>{ if(busy) readout.textContent="STATUS: FISSION — ENERGY + NEUTRONS RELEASED"; },1120);
+
+    // Start the fragment / burst sequence.
+    stage.classList.add("run");
+
+    // Move the neutron using the exact current positions.
+    launchNeutron();
+
+    setTimeout(()=>{
+      if(busy) readout.textContent="STATUS: NUCLEUS DEFORMING";
+    },760);
+
+    setTimeout(()=>{
+      if(busy) readout.textContent="STATUS: FISSION — ENERGY + NEUTRONS RELEASED";
+    },1080);
 
     resetTimer=setTimeout(()=>{
       resetFissionLab();
       showMeme(
         "💥",
         "Fission complete",
-        "U-235 absorbed the neutron, became unstable and split. The fragments moved apart while additional neutrons were released.",
+        "The neutron travelled into the U-235 nucleus, was absorbed, and the unstable nucleus split into fragments while releasing additional neutrons.",
         50
       );
     },2450);
   });
 
-  // Return to a clean state if the page/tab was interrupted mid-animation.
+  // Resize-safe: if the layout changes during a shot, reset rather
+  // than letting a stale trajectory miss the target.
+  window.addEventListener("resize",()=>{
+    if(busy) resetFissionLab();
+  });
+
   document.addEventListener("visibilitychange",()=>{
     if(document.hidden && busy) resetFissionLab();
   });
