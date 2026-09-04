@@ -83,3 +83,227 @@ footer{text-align:center;padding:45px 20px;border-top:1px solid rgba(255,255,255
 .feedback-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:900px;margin:auto}.reaction{border:1px solid var(--border);background:rgba(11,23,32,.75);color:#fff;padding:18px;border-radius:12px;font-size:23px}.reaction b{display:block;font-size:11px;margin-top:6px}.reaction-summary{max-width:900px;margin:14px auto 30px;text-align:center;color:var(--muted);font-size:11px}.comment-board{max-width:950px;margin:auto;border:1px solid var(--border);background:rgba(11,23,32,.72);padding:25px;border-radius:16px}.comment-board p{color:var(--muted);font-size:12px;margin:8px 0 18px}
 @media(max-width:800px){#langSelect{max-width:95px}.study-grid,.equation-panel,.fusion-bridge,.arcade-hero,.fusion-game{grid-template-columns:1fr}.arcade-logo{width:240px;height:240px;font-size:105px;margin:auto}.sort-zones,.feedback-cards{grid-template-columns:1fr 1fr}.boss-header{grid-template-columns:55px 1fr}.boss-header>.scorebox{grid-column:2}.fusion-core{height:310px}}
 @media(max-width:520px){.top-actions #langSelect{display:block}.sort-zones,.feedback-cards{grid-template-columns:1fr}.inline-choices{flex-direction:column}.arcade-hero h1{font-size:48px}.fusion-bridge{grid-template-columns:1fr}.fusion-sun{font-size:55px}}
+
+
+/* =========================================================
+   FISSIONQUEST V4.3.1 — VISUAL REPAIR
+   Keeps the V4.3 quiz/music behavior unchanged.
+   ========================================================= */
+
+/* ---------- MOVING BACKGROUND FIX ---------- */
+html{
+  background:#05090d;
+}
+
+body{
+  background:transparent !important;
+  position:relative;
+  min-height:100vh;
+}
+
+/* HTML uses id="starField", not class="star-field". */
+#starField,
+.grid-bg{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  pointer-events:none !important;
+  z-index:0 !important;
+}
+
+/* Put all real page content above the animated canvas. */
+main,
+footer{
+  position:relative;
+  z-index:1;
+}
+
+.topbar{
+  z-index:1000 !important;
+}
+
+/* Soft drifting background glow so the page never looks fully static. */
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  width:44vw;
+  height:44vw;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:0;
+  filter:blur(80px);
+  opacity:.075;
+}
+
+body::before{
+  top:10vh;
+  left:-18vw;
+  background:radial-gradient(circle,rgba(88,228,255,.75),transparent 68%);
+  animation:fqAmbientOne 18s ease-in-out infinite alternate;
+}
+
+body::after{
+  right:-18vw;
+  bottom:-10vh;
+  background:radial-gradient(circle,rgba(111,255,176,.5),transparent 68%);
+  animation:fqAmbientTwo 22s ease-in-out infinite alternate;
+}
+
+@keyframes fqAmbientOne{
+  from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(12vw,10vh,0) scale(1.14)}
+}
+@keyframes fqAmbientTwo{
+  from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(-12vw,-9vh,0) scale(1.12)}
+}
+
+/* ---------- OPENING / HERO SPACE FIX ---------- */
+.hero{
+  min-height:88vh !important;
+  padding-top:105px !important;
+  padding-bottom:45px !important;
+}
+
+/* Do not leave the hero looking blank while reveal JS initializes. */
+.hero > .reveal{
+  opacity:1 !important;
+  transform:none !important;
+}
+
+.hero-reactor{
+  height:440px !important;
+}
+
+/* Make each atomic orbit keep its intended angle while rotating. */
+.atom-orbit.o1{
+  animation:fqOrbit1 14s linear infinite !important;
+}
+.atom-orbit.o2{
+  animation:fqOrbit2 11s linear infinite !important;
+}
+.atom-orbit.o3{
+  animation:fqOrbit3 9s linear infinite !important;
+}
+
+@keyframes fqOrbit1{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+@keyframes fqOrbit2{
+  from{transform:rotate(60deg) scaleY(.55)}
+  to{transform:rotate(420deg) scaleY(.55)}
+}
+@keyframes fqOrbit3{
+  from{transform:rotate(-60deg) scaleY(.55)}
+  to{transform:rotate(300deg) scaleY(.55)}
+}
+
+/* ---------- REACTOR GIANT-BLOCK FIX ---------- */
+/* Current HTML uses .vessel. This must be the positioning parent. */
+.reactor-diagram .containment-shell{
+  position:relative;
+}
+
+.reactor-diagram .vessel{
+  width:100%;
+  height:100%;
+  position:relative !important;
+  border:1px solid rgba(88,228,255,.28);
+  border-radius:40% 40% 20% 20%;
+  overflow:hidden !important;
+  background:#0b1d28;
+}
+
+/* Explicitly constrain all reactor internals to the vessel. */
+.reactor-diagram .water-zone{
+  position:absolute !important;
+  inset:30% 0 0 !important;
+  background:linear-gradient(rgba(88,228,255,.07),rgba(88,228,255,.18));
+  z-index:0;
+}
+
+.reactor-diagram .fuel-bank{
+  position:absolute !important;
+  left:23% !important;
+  right:23% !important;
+  bottom:12% !important;
+  height:48% !important;
+  display:grid !important;
+  grid-template-columns:repeat(3,1fr) !important;
+  gap:8px !important;
+  z-index:1;
+}
+
+.reactor-diagram .control-bank{
+  position:absolute !important;
+  left:27% !important;
+  right:27% !important;
+  top:0 !important;
+  height:55% !important;
+  display:grid !important;
+  grid-template-columns:repeat(4,1fr) !important;
+  gap:8px !important;
+  z-index:2;
+}
+
+/* Prevent any inherited/global <i> sizing from blowing up the rods. */
+.reactor-diagram .fuel-bank i,
+.reactor-diagram .control-bank i{
+  display:block !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  position:static !important;
+  transform:none !important;
+}
+
+.reactor-diagram .fuel-bank i{
+  height:100% !important;
+  background:linear-gradient(#ffc069,#a85520);
+  border-radius:8px;
+  box-shadow:0 0 10px rgba(255,159,80,.25);
+}
+
+.reactor-diagram .control-bank i{
+  height:100% !important;
+  background:linear-gradient(#a9bbc4,#39464c);
+  border-radius:0 0 7px 7px;
+}
+
+/* ---------- RESPONSIVE HERO REPAIR ---------- */
+@media(max-width:1100px){
+  .hero{
+    min-height:auto !important;
+    padding-top:110px !important;
+  }
+  .hero-reactor{
+    height:390px !important;
+  }
+}
+
+@media(max-width:800px){
+  .hero-reactor{
+    height:340px !important;
+  }
+  .atom-orbit{
+    width:285px !important;
+    height:285px !important;
+  }
+}
+
+@media(max-width:520px){
+  .hero{
+    padding-top:95px !important;
+    padding-bottom:35px !important;
+  }
+  .hero-reactor{
+    height:285px !important;
+  }
+  .atom-orbit{
+    width:235px !important;
+    height:235px !important;
+  }
+}
