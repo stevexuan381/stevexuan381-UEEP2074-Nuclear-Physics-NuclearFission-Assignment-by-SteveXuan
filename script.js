@@ -98,6 +98,21 @@ if($("#fireFission")){
     }
   }
 
+  function placeNeutronAtStart(){
+    const stageRect=stage.getBoundingClientRect();
+
+    // Fixed launch position inside the lab.
+    const startX=Math.max(58, stage.clientWidth * 0.045);
+    const startY=stage.clientHeight * 0.50;
+
+    incoming.style.left=startX+"px";
+    incoming.style.top=startY+"px";
+    incoming.style.transform="translate(-50%,-50%)";
+    incoming.style.opacity="1";
+
+    return {stageRect,startX,startY};
+  }
+
   function resetFissionLab(){
     if(resetTimer){
       clearTimeout(resetTimer);
@@ -107,11 +122,11 @@ if($("#fireFission")){
     cancelFlight();
     stage.classList.remove("run","impact");
 
-    // Clear any inline visual state left by Web Animations.
-    incoming.style.opacity="";
+    incoming.style.left="";
+    incoming.style.top="";
     incoming.style.transform="";
+    incoming.style.opacity="";
 
-    // Force browser reflow so the fission sequence can replay.
     void stage.offsetWidth;
 
     readout.textContent="STATUS: READY";
@@ -120,39 +135,38 @@ if($("#fireFission")){
   }
 
   function launchNeutron(){
-    // Measure both centres in the current responsive layout.
-    const neutronRect=incoming.getBoundingClientRect();
+    const {stageRect,startX,startY}=placeNeutronAtStart();
+
+    // Measure U-235 center relative to the fission stage.
     const targetRect=target.getBoundingClientRect();
+    const targetX=(targetRect.left-stageRect.left)+(targetRect.width/2);
+    const targetY=(targetRect.top-stageRect.top)+(targetRect.height/2);
 
-    const neutronCX=neutronRect.left + neutronRect.width/2;
-    const neutronCY=neutronRect.top + neutronRect.height/2;
-    const targetCX=targetRect.left + targetRect.width/2;
-    const targetCY=targetRect.top + targetRect.height/2;
-
-    const dx=targetCX-neutronCX;
-    const dy=targetCY-neutronCY;
-
+    // Animate physical coordinates, not transform/calc().
     neutronFlight=incoming.animate(
       [
         {
-          transform:"translate(0px,-50%) scale(1)",
+          left:startX+"px",
+          top:startY+"px",
           opacity:1,
-          offset:0
+          transform:"translate(-50%,-50%) scale(1)"
         },
         {
-          transform:`translate(${dx*0.72}px,calc(-50% + ${dy*0.72}px)) scale(1.08)`,
+          left:(startX+(targetX-startX)*0.72)+"px",
+          top:(startY+(targetY-startY)*0.72)+"px",
           opacity:1,
-          offset:0.68
+          transform:"translate(-50%,-50%) scale(1.08)"
         },
         {
-          transform:`translate(${dx}px,calc(-50% + ${dy}px)) scale(.72)`,
+          left:targetX+"px",
+          top:targetY+"px",
           opacity:0,
-          offset:1
+          transform:"translate(-50%,-50%) scale(.65)"
         }
       ],
       {
-        duration:720,
-        easing:"cubic-bezier(.35,.05,.72,.95)",
+        duration:850,
+        easing:"cubic-bezier(.28,.02,.68,1)",
         fill:"forwards"
       }
     );
@@ -171,42 +185,41 @@ if($("#fireFission")){
     busy=true;
     fireBtn.disabled=true;
 
-    // Start from a completely clean state.
     cancelFlight();
     stage.classList.remove("run","impact");
-    incoming.style.opacity="";
+    incoming.style.left="";
+    incoming.style.top="";
     incoming.style.transform="";
+    incoming.style.opacity="";
     void stage.offsetWidth;
 
     readout.textContent="STATUS: NEUTRON APPROACHING";
-
-    // Start the fragment / burst sequence.
     stage.classList.add("run");
 
-    // Move the neutron using the exact current positions.
-    launchNeutron();
+    // Let layout settle for one frame before measuring positions.
+    requestAnimationFrame(()=>{
+      if(busy) launchNeutron();
+    });
 
     setTimeout(()=>{
       if(busy) readout.textContent="STATUS: NUCLEUS DEFORMING";
-    },760);
+    },900);
 
     setTimeout(()=>{
       if(busy) readout.textContent="STATUS: FISSION — ENERGY + NEUTRONS RELEASED";
-    },1080);
+    },1180);
 
     resetTimer=setTimeout(()=>{
       resetFissionLab();
       showMeme(
         "💥",
         "Fission complete",
-        "The neutron travelled into the U-235 nucleus, was absorbed, and the unstable nucleus split into fragments while releasing additional neutrons.",
+        "The neutron travelled into the U-235 nucleus, was absorbed, and the unstable nucleus split while releasing additional neutrons.",
         50
       );
-    },2450);
+    },2600);
   });
 
-  // Resize-safe: if the layout changes during a shot, reset rather
-  // than letting a stale trajectory miss the target.
   window.addEventListener("resize",()=>{
     if(busy) resetFissionLab();
   });

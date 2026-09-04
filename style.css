@@ -614,3 +614,15 @@ body::after{
     0 0 80px rgba(255,215,102,.32),
     0 0 120px rgba(88,228,255,.18);
 }
+
+
+/* ===== V4.3.5 ABSOLUTE NEUTRON MOVEMENT FIX ===== */
+.fission-stage.run .incoming-neutron{
+  animation:none !important;
+}
+
+.fission-stage .incoming-neutron{
+  position:absolute !important;
+  z-index:10 !important;
+  will-change:left,top,opacity,transform;
+}
