@@ -227,6 +227,5 @@ $$(".suggestion").forEach(b=>{
   });
 });
 
-setTimeout(()=>addChat("bot",tutorAnswer(b.textContent)),200)});
 
 const star=$("#starField");if(star){const c=star.getContext("2d");let ss=[];function rs(){star.width=innerWidth;star.height=innerHeight;ss=Array.from({length:Math.min(140,Math.floor(innerWidth/8))},()=>({x:Math.random()*star.width,y:Math.random()*star.height,r:Math.random()*1.3+.3,v:Math.random()*.16+.03}))}function dr(){c.clearRect(0,0,star.width,star.height);for(const s of ss){s.y-=s.v;if(s.y<0)s.y=star.height;c.beginPath();c.fillStyle=`rgba(88,228,255,${.12+s.r*.15})`;c.arc(s.x,s.y,s.r,0,Math.PI*2);c.fill()}requestAnimationFrame(dr)}addEventListener("resize",rs);rs();dr()}
