@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#061018" />
+  <meta name="description" content="FissionQuest — a gamified nuclear fission learning experience for high school students." />
+  <title>FissionQuest | Nuclear Physics Explorer</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="bootScreen" class="boot-screen">
+    <div class="boot-mark">
+      <span></span><span></span><span></span>
+      <b>⚛</b>
+    </div>
+    <h1>FISSIONQUEST</h1>
+    <p>Loading reactor lab...</p>
+  </div>
+
+  <canvas id="starField" class="star-field" aria-hidden="true"></canvas>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="FissionQuest home">
+      <img src="favicon.svg" alt="" />
+      <div>
+        <strong>FISSION<span>QUEST</span></strong>
+        <small>NUCLEAR PHYSICS EXPLORER</small>
+      </div>
+    </a>
+
+    <nav id="mainNav">
+      <a href="#history">History</a>
+      <a href="#physics">Physics</a>
+      <a href="#accidents">Case Files</a>
+      <a href="#games">Arcade</a>
+      <a href="#videos">Videos</a>
+      <a href="#tutor">Tutor</a>
+    </nav>
+
+    <div class="top-actions">
+      <button id="musicBtn" class="chip" type="button" title="Toggle original reactor synth">♫ Music: Off</button>
+      <div class="xp-pill">⚛ <b id="xpTop">0</b> XP</div>
+      <button id="menuBtn" class="menu-btn" type="button">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-copy reveal">
+        <span class="kicker"><i></i> REACTOR LAB ONLINE</span>
+        <h1>Split atoms.<br><span>Build understanding.</span></h1>
+        <p>
+          A mission-based journey through the history, physics, engineering, accidents,
+          applications and future of nuclear fission — made for curious high-school students.
+        </p>
+
+        <div class="hero-buttons">
+          <a class="btn primary" href="#history">🚀 Begin Mission</a>
+          <a class="btn ghost" href="#games">🎮 Enter Nuclear Arcade</a>
+        </div>
+
+        <div class="hero-stats">
+          <div><b>5</b><span>Learning missions</span></div>
+          <div><b>4</b><span>Arcade games</span></div>
+          <div><b>2</b><span>Physics videos</span></div>
+        </div>
+      </div>
+
+      <div class="hero-reactor reveal">
+        <div class="atom-orbit o1"><i></i></div>
+        <div class="atom-orbit o2"><i></i></div>
+        <div class="atom-orbit o3"><i></i></div>
+        <div class="hero-nucleus">
+          <span class="p">p</span><span class="n">n</span><span class="p">p</span>
+          <span class="n">n</span><span class="p">p</span><span class="n">n</span>
+          <span class="p">p</span><span class="n">n</span><span class="p">p</span>
+        </div>
+        <div class="scan-ring"></div>
+        <div class="hero-readout">
+          <small>NUCLEAR ENERGY</small>
+          <b>E = mc²</b>
+          <span>Mass ↔ Energy</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="mission-map section-shell">
+      <div class="section-head center reveal">
+        <span class="eyebrow">YOUR LEARNING PATH</span>
+        <h2>Complete the <span>Nuclear Mission</span></h2>
+        <p>Learn → interact → play → get feedback → earn XP.</p>
+      </div>
+
+      <div class="mission-track reveal">
+        <a href="#history"><b>01</b><span>Atomic Age</span><em>History</em></a>
+        <a href="#physics"><b>02</b><span>Break the Nucleus</span><em>Physics</em></a>
+        <a href="#reactor"><b>03</b><span>Engineer the Core</span><em>Reactor</em></a>
+        <a href="#accidents"><b>04</b><span>Case Files</span><em>Safety</em></a>
+        <a href="#future"><b>05</b><span>Tomorrow's Reactors</span><em>Future</em></a>
+      </div>
+    </section>
+
+    <section id="history" class="section-shell">
+      <div class="section-head reveal">
+        <span class="chapter-no">01</span>
+        <div>
+          <span class="eyebrow">THE DAWN OF THE ATOMIC AGE</span>
+          <h2>History with <span>plot twists</span></h2>
+          <p>Open each file to see how one discovery unlocked the next.</p>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <article class="timeline-item reveal">
+          <time>1896</time>
+          <div>
+            <h3>Becquerel discovers radioactivity</h3>
+            <p>Uranium salts fog photographic plates even without sunlight — evidence that atoms can release radiation spontaneously.</p>
+            <button class="fact-btn" data-fact="Becquerel’s accidental discovery helped overturn the idea that atoms were indivisible and unchanging.">Interesting fact</button>
+          </div>
+        </article>
+
+        <article class="timeline-item reveal">
+          <time>1898</time>
+          <div>
+            <h3>Marie & Pierre Curie push radioactivity forward</h3>
+            <p>The Curies isolated and studied highly radioactive materials, helping turn radioactivity into a serious field of physics.</p>
+            <button class="fact-btn" data-fact="Marie Curie became the first person to win Nobel Prizes in two different scientific fields.">Interesting fact</button>
+          </div>
+        </article>
+
+        <article class="timeline-item reveal">
+          <time>1911</time>
+          <div>
+            <h3>Rutherford reveals the nucleus</h3>
+            <p>The gold-foil experiment showed that most of the atom is empty space and nearly all positive charge is concentrated in a tiny nucleus.</p>
+            <button class="fact-btn" data-fact="If an atom were the size of a stadium, its nucleus would be tiny compared with the stadium itself.">Scale fact</button>
+          </div>
+        </article>
+
+        <article class="timeline-item reveal">
+          <time>1938–1939</time>
+          <div>
+            <h3>Fission is discovered and explained</h3>
+            <p>Experiments by Otto Hahn and Fritz Strassmann produced unexpectedly light products from uranium. Lise Meitner and Otto Frisch explained the nucleus had split.</p>
+            <button class="fact-btn" data-fact="The name “fission” was borrowed from biology, where it describes one object splitting into parts.">Word origin</button>
+          </div>
+        </article>
+
+        <article class="timeline-item reveal hot">
+          <time>1942</time>
+          <div>
+            <h3>Chicago Pile-1 reaches sustained criticality</h3>
+            <p>Enrico Fermi’s team demonstrated the first controlled, self-sustaining chain reaction on 2 December 1942.</p>
+            <button class="fact-btn" data-fact="Chicago Pile-1 was built under stadium stands. DOE notes that instruments had names inspired by Winnie-the-Pooh characters: Piglet, Tigger and Pooh.">Odd-but-true fact</button>
+          </div>
+        </article>
+
+        <article class="timeline-item reveal">
+          <time>1950s → now</time>
+          <div>
+            <h3>From experimental piles to power reactors</h3>
+            <p>Reactor engineering evolved into commercial PWRs and BWRs, then Gen III/III+ designs and today’s advanced-reactor and SMR programmes.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="meme-panel reveal">
+        <div class="meme-face">🧑‍🔬</div>
+        <div>
+          <small>HISTORY MEME BREAK</small>
+          <h3>Scientists in 1896: “Atoms are probably simple.”</h3>
+          <p>Atoms for the next 50 years: <b>“You have no idea what’s coming.”</b></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="physics" class="section-shell alt-bg">
+      <div class="section-head reveal">
+        <span class="chapter-no">02</span>
+        <div>
+          <span class="eyebrow">CORE MECHANICS</span>
+          <h2>What actually happens in <span>fission?</span></h2>
+          <p>Less memorising. More cause-and-effect.</p>
+        </div>
+      </div>
+
+      <div class="concept-grid">
+        <article class="concept-card reveal">
+          <span>⚛</span>
+          <h3>1. A neutron arrives</h3>
+          <p>U-235 can absorb a neutron. The resulting excited nucleus is unstable.</p>
+        </article>
+        <article class="concept-card reveal">
+          <span>〰️</span>
+          <h3>2. The nucleus deforms</h3>
+          <p>Nuclear forces and electric repulsion compete as the excited nucleus stretches.</p>
+        </article>
+        <article class="concept-card reveal">
+          <span>💥</span>
+          <h3>3. The nucleus splits</h3>
+          <p>Two main fission fragments form, together with radiation and typically a few neutrons.</p>
+        </article>
+        <article class="concept-card reveal">
+          <span>🔥</span>
+          <h3>4. Energy becomes heat</h3>
+          <p>The fragments fly apart with high kinetic energy; collisions in the fuel turn much of that motion into thermal energy.</p>
+        </article>
+      </div>
+
+      <div class="fission-lab reveal">
+        <div class="lab-title">
+          <span>INTERACTIVE 2D LAB</span>
+          <h3>Fire a neutron at U-235</h3>
+        </div>
+        <div id="fissionStage" class="fission-stage">
+          <div id="incomingNeutron" class="incoming-neutron">n</div>
+          <div id="u235" class="u235"><small>235</small>U</div>
+          <div class="frag frag-a">Kr</div>
+          <div class="frag frag-b">Ba</div>
+          <div class="out-n out1">n</div>
+          <div class="out-n out2">n</div>
+          <div class="out-n out3">n</div>
+          <div class="energy-burst"></div>
+        </div>
+        <div class="lab-controls">
+          <button id="fireFission" class="btn primary">⚡ Fire Neutron</button>
+          <span id="fissionReadout">STATUS: READY</span>
+        </div>
+        <p class="tiny-note">Educational animation: fragment identities vary between real fission events; this is a simplified visual example.</p>
+      </div>
+
+      <div class="binding-card reveal">
+        <div>
+          <span class="eyebrow">WHY ENERGY IS RELEASED</span>
+          <h3>Think “more tightly bound,” not “mass disappears.”</h3>
+          <p>
+            Medium-mass nuclei are generally more tightly bound per nucleon than very heavy nuclei.
+            After a heavy nucleus splits, the products can have a slightly lower total mass-energy.
+            That difference appears as released energy, consistent with <b>E = mc²</b>.
+          </p>
+        </div>
+        <div class="binding-visual">
+          <svg viewBox="0 0 460 240" role="img" aria-label="Simplified binding energy curve">
+            <line x1="45" y1="205" x2="430" y2="205"></line>
+            <line x1="45" y1="205" x2="45" y2="25"></line>
+            <path d="M50 190 C90 110, 125 65, 180 50 C245 35, 320 53, 420 82"></path>
+            <circle cx="205" cy="47" r="6"></circle>
+            <circle cx="395" cy="74" r="6"></circle>
+            <text x="185" y="30">Fe region</text>
+            <text x="365" y="105">U-235</text>
+            <text x="150" y="232">Mass number →</text>
+            <text transform="translate(17,175) rotate(-90)">Binding energy / nucleon</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="criticality-grid reveal">
+        <article><b>k &lt; 1</b><h3>Subcritical</h3><p>Each generation causes fewer fissions. The reaction dies away.</p></article>
+        <article class="critical"><b>k ≈ 1</b><h3>Critical</h3><p>A steady self-sustaining chain reaction. “Critical” does not mean “about to explode.”</p></article>
+        <article><b>k &gt; 1</b><h3>Supercritical</h3><p>Fission population rises from one generation to the next.</p></article>
+      </div>
+
+      <div class="meme-panel reveal">
+        <div class="meme-face">😌</div>
+        <div>
+          <small>NUCLEAR TERMINOLOGY MEME</small>
+          <h3>Reactor: “I’m critical.”</h3>
+          <p>Everyone else: 😱 &nbsp;&nbsp; Nuclear engineer: <b>“Good. That means stable.”</b></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="reactor" class="section-shell">
+      <div class="section-head reveal">
+        <span class="chapter-no">03</span>
+        <div>
+          <span class="eyebrow">ENGINEERING</span>
+          <h2>From fission to <span>electricity</span></h2>
+          <p>A reactor is fundamentally a controlled heat source connected to a steam-electric power cycle.</p>
+        </div>
+      </div>
+
+      <div class="energy-chain reveal">
+        <div>⚛<b>Fission</b></div><i>→</i>
+        <div>🔥<b>Heat</b></div><i>→</i>
+        <div>💨<b>Steam</b></div><i>→</i>
+        <div>⚙️<b>Turbine</b></div><i>→</i>
+        <div>⚡<b>Generator</b></div>
+      </div>
+
+      <div class="reactor-explorer reveal">
+        <div class="reactor-diagram">
+          <div class="containment-shell">
+            <div class="pressure-vessel">
+              <div class="control-bank"><i></i><i></i><i></i><i></i></div>
+              <div class="water-zone"></div>
+              <div class="fuel-bank"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <span class="core-glow"></span>
+            </div>
+          </div>
+          <small>SIMPLIFIED LIGHT-WATER REACTOR CORE</small>
+        </div>
+
+        <div class="component-tabs">
+          <button data-comp="fuel">☢ Fuel rods</button>
+          <button data-comp="moderator">💧 Moderator</button>
+          <button data-comp="control">🛑 Control rods</button>
+          <button data-comp="coolant">🌊 Coolant</button>
+          <button data-comp="containment">🏢 Containment</button>
+          <div id="componentInfo" class="component-info">
+            <span class="eyebrow">SELECT A COMPONENT</span>
+            <h3>What would you like to inspect?</h3>
+            <p>Click one of the buttons above.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pwr-bwr reveal">
+        <article>
+          <span>PWR</span>
+          <h3>Pressurized Water Reactor</h3>
+          <p>Primary water is kept at high pressure so it does not boil in the reactor vessel. It transfers heat to a separate secondary loop that makes steam.</p>
+        </article>
+        <article>
+          <span>BWR</span>
+          <h3>Boiling Water Reactor</h3>
+          <p>Water boils directly in the reactor vessel. Steam from the reactor goes to the turbine, then is condensed and reused.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="accidents" class="section-shell danger-bg">
+      <div class="section-head reveal">
+        <span class="chapter-no">04</span>
+        <div>
+          <span class="eyebrow">NUCLEAR CASE FILES</span>
+          <h2>When physics meets <span>engineering reality</span></h2>
+          <p>Accidents are studied not for shock value, but because they reveal how feedback, heat removal and safety layers matter.</p>
+        </div>
+      </div>
+
+      <div class="case-grid">
+        <article class="case-card reveal">
+          <header><span>CASE 1986</span><b>CHERNOBYL UNIT 4</b></header>
+          <div class="case-visual chernobyl">
+            <div class="rbmk-core">
+              <span>steam ↑</span>
+              <i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+          <h3>Physics focus: positive void feedback</h3>
+          <p>
+            In the RBMK conditions present during the accident, increasing steam voids could increase reactivity.
+            More reactivity could raise power, creating more boiling and still more voids — a dangerous positive feedback loop.
+          </p>
+          <div class="feedback-loop">
+            <b>More steam voids</b><i>→</i><b>higher reactivity</b><i>→</i><b>higher power</b><i>→</i><b>more boiling</b>
+          </div>
+          <p class="case-lesson"><strong>Lesson:</strong> reactor feedback coefficients and control-system design can determine whether a disturbance damps itself or grows.</p>
+        </article>
+
+        <article class="case-card reveal">
+          <header><span>CASE 2011</span><b>FUKUSHIMA DAIICHI</b></header>
+          <div class="case-visual fukushima">
+            <div class="wave">🌊</div>
+            <div class="plant">🏭</div>
+            <div class="power-off">⚡✕</div>
+          </div>
+          <h3>Physics focus: decay heat does not instantly vanish</h3>
+          <p>
+            Reactors shut down after the earthquake, but radioactive fission products continued to generate decay heat.
+            Tsunami flooding caused severe power and cooling losses, making heat removal extremely difficult.
+          </p>
+          <div class="feedback-loop">
+            <b>Shutdown</b><i>≠</i><b>zero heat</b><i>→</i><b>cooling still needed</b>
+          </div>
+          <p class="case-lesson"><strong>Lesson:</strong> reliable decay-heat removal, backup power, diverse cooling paths and protection from extreme hazards are essential.</p>
+        </article>
+      </div>
+
+      <div class="safety-note reveal">
+        <span>🛡️</span>
+        <div>
+          <h3>Defence in depth</h3>
+          <p>Modern nuclear safety uses multiple layers: prevention, control, cooling, containment, monitoring, emergency procedures and independent regulation. No single barrier should carry the entire safety burden.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="future" class="section-shell future-bg">
+      <div class="section-head reveal">
+        <span class="chapter-no">05</span>
+        <div>
+          <span class="eyebrow">THE HORIZON</span>
+          <h2>Next-generation <span>fission</span></h2>
+          <p>Advanced concepts explore different coolants, neutron spectra, fuel forms and deployment sizes.</p>
+        </div>
+      </div>
+
+      <div class="future-cards">
+        <article class="reveal"><b>SMR</b><h3>Small Modular Reactors</h3><p>Smaller units intended to support modular construction and flexible deployment.</p></article>
+        <article class="reveal"><b>MSR</b><h3>Molten Salt Reactors</h3><p>Use molten salts as coolant and, in some concepts, as part of the fuel system.</p></article>
+        <article class="reveal"><b>FAST</b><h3>Fast Reactors</h3><p>Operate without a neutron moderator and may use liquid-metal coolants such as sodium or lead.</p></article>
+        <article class="reveal"><b>HTGR</b><h3>High-Temperature Gas Reactors</h3><p>Use gas cooling and high-temperature fuel systems that can support electricity and industrial heat applications.</p></article>
+      </div>
+    </section>
+
+    <section id="games" class="section-shell arcade-bg">
+      <div class="section-head center reveal">
+        <span class="eyebrow">FISSIONQUEST ARCADE</span>
+        <h2>Learn physics by <span>playing it</span></h2>
+        <p>Four different mini-games — not four different quizzes.</p>
+      </div>
+
+      <div class="game-tabs reveal">
+        <button class="game-tab active" data-game="neutronDash">☄️ Neutron Dash</button>
+        <button class="game-tab" data-game="rodControl">🎛️ Reactor Control</button>
+        <button class="game-tab" data-game="reactorBuild">🏗️ Build-a-Reactor</button>
+        <button class="game-tab" data-game="quizArena">🧠 Quiz Arena</button>
+      </div>
+
+      <div id="neutronDash" class="game-panel active reveal">
+        <div class="game-intro">
+          <div>
+            <span class="eyebrow">ARCADE MODE 01</span>
+            <h3>Neutron Dash</h3>
+            <p>Move the neutron left/right. Collect U-235 nuclei, avoid absorber blocks, and learn why neutron interactions matter.</p>
+          </div>
+          <div class="scorebox">Score <b id="dashScore">0</b> / 8</div>
+        </div>
+        <canvas id="dashCanvas" width="900" height="430"></canvas>
+        <div class="game-help">Keyboard: ← → or A D &nbsp; • &nbsp; Mobile: use buttons below</div>
+        <div class="mobile-controls">
+          <button id="dashLeft">←</button><button id="dashStart" class="btn primary">START</button><button id="dashRight">→</button>
+        </div>
+      </div>
+
+      <div id="rodControl" class="game-panel reveal">
+        <div class="game-intro">
+          <div>
+            <span class="eyebrow">ARCADE MODE 02</span>
+            <h3>Reactor Control: Keep k ≈ 1</h3>
+            <p>Use control rods to counter random reactor changes. Stay inside the green critical band for 20 seconds.</p>
+          </div>
+          <div class="scorebox">Time <b id="controlTime">20.0</b>s</div>
+        </div>
+
+        <div class="control-room">
+          <div class="reactor-meter">
+            <div class="meter-labels"><span>SUBCRITICAL</span><span>CRITICAL</span><span>SUPERCRITICAL</span></div>
+            <div class="meter-track"><div class="critical-zone"></div><div id="meterNeedle"></div></div>
+            <div class="k-readout">k = <b id="kDisplay">1.000</b></div>
+          </div>
+          <div class="rod-console">
+            <label>Control rod insertion <b id="rodPercent">50%</b></label>
+            <input id="rodSlider" type="range" min="0" max="100" value="50">
+            <div class="rod-visual"><div id="rodGraphic"></div><div class="mini-core">CORE</div></div>
+            <button id="controlStart" class="btn primary">START 20s CHALLENGE</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="reactorBuild" class="game-panel reveal">
+        <div class="game-intro">
+          <div>
+            <span class="eyebrow">ARCADE MODE 03</span>
+            <h3>Build-a-Reactor</h3>
+            <p>Drag each component into the correct zone. Every correct placement unlocks its physics role.</p>
+          </div>
+          <div class="scorebox">Placed <b id="buildScore">0</b> / 5</div>
+        </div>
+
+        <div class="build-game">
+          <div class="parts-bin">
+            <div class="draggable-part" draggable="true" data-part="fuel">☢ Fuel rods</div>
+            <div class="draggable-part" draggable="true" data-part="moderator">💧 Moderator</div>
+            <div class="draggable-part" draggable="true" data-part="control">🛑 Control rods</div>
+            <div class="draggable-part" draggable="true" data-part="coolant">🌊 Coolant</div>
+            <div class="draggable-part" draggable="true" data-part="containment">🏢 Containment</div>
+          </div>
+
+          <div class="reactor-drop-map">
+            <div class="drop-zone outer" data-accept="containment"><span>Containment zone</span></div>
+            <div class="drop-zone coolant-zone" data-accept="coolant"><span>Coolant zone</span></div>
+            <div class="drop-zone moderator-zone" data-accept="moderator"><span>Moderator zone</span></div>
+            <div class="drop-zone fuel-zone" data-accept="fuel"><span>Fuel zone</span></div>
+            <div class="drop-zone control-zone" data-accept="control"><span>Control zone</span></div>
+          </div>
+        </div>
+        <p id="buildFeedback" class="game-feedback">Drag a component to begin.</p>
+      </div>
+
+      <div id="quizArena" class="game-panel reveal">
+        <div class="game-intro">
+          <div>
+            <span class="eyebrow">ARCADE MODE 04</span>
+            <h3>Quiz Arena</h3>
+            <p>Fast questions, instant explanations and meme-style victory reactions.</p>
+          </div>
+          <div class="scorebox">Question <b id="quizNo">1</b> / 10</div>
+        </div>
+        <div class="quiz-box">
+          <h3 id="quizQuestion">Loading...</h3>
+          <div id="quizChoices"></div>
+          <p id="quizExplanation"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="videos" class="section-shell">
+      <div class="section-head reveal">
+        <span class="chapter-no">▶</span>
+        <div>
+          <span class="eyebrow">VIDEO LAB</span>
+          <h2>Watch the nucleus <span>come alive</span></h2>
+          <p>Two selected videos: one focused on fission and one comparing fission with fusion.</p>
+        </div>
+      </div>
+
+      <div class="video-grid">
+        <article class="video-card reveal">
+          <div class="video-frame">
+            <iframe src="https://www.youtube.com/embed/zyE-PVQh3Wc" title="Nuclear Fission Animation" allowfullscreen></iframe>
+          </div>
+          <span>FISSION</span>
+          <h3>Nuclear Fission — Animation</h3>
+          <p>A visual introduction to the basic fission process.</p>
+        </article>
+
+        <article class="video-card reveal">
+          <div class="video-frame">
+            <iframe src="https://www.youtube.com/embed/2W-GEE6YU4M" title="Fission vs Fusion - U.S. Department of Energy" allowfullscreen></iframe>
+          </div>
+          <span>FISSION + FUSION</span>
+          <h3>Fission vs Fusion: What’s the Difference?</h3>
+          <p>U.S. Department of Energy video comparing splitting heavy nuclei with joining light nuclei.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="tutor" class="section-shell tutor-bg">
+      <div class="section-head reveal">
+        <span class="chapter-no">AI</span>
+        <div>
+          <span class="eyebrow">NUCLEUS TUTOR</span>
+          <h2>Your built-in <span>nuclear assistant</span></h2>
+          <p>Ask about fission, fusion, reactors, accidents, criticality or waste. This version works offline on GitHub Pages.</p>
+        </div>
+      </div>
+
+      <div class="tutor-wrap reveal">
+        <aside class="tutor-sidebar">
+          <div class="bot-avatar">⚛</div>
+          <h3>Nucleus Tutor</h3>
+          <p>Offline guided tutor</p>
+          <button class="suggestion">What is nuclear fission?</button>
+          <button class="suggestion">Fission vs fusion</button>
+          <button class="suggestion">Why do moderators slow neutrons?</button>
+          <button class="suggestion">Explain Chernobyl physics</button>
+          <button class="suggestion">Explain Fukushima physics</button>
+        </aside>
+
+        <div class="chat">
+          <div id="chatLog" class="chat-log">
+            <div class="msg bot">
+              <b>Nucleus Tutor</b>
+              <p>Hi! Ask me something about nuclear fission or fusion. I’ll explain it at high-school level.</p>
+            </div>
+          </div>
+          <form id="chatForm" class="chat-input">
+            <input id="chatInput" type="text" placeholder="Ask: Why does U-235 fission?" autocomplete="off">
+            <button class="btn primary" type="submit">Send</button>
+          </form>
+          <small class="tiny-note">This is a curated offline tutor, not a live generative-AI service. A real AI API should be connected through a secure backend, never by exposing an API key in front-end JavaScript.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-shell references">
+      <div class="section-head reveal">
+        <span class="chapter-no">REF</span>
+        <div>
+          <span class="eyebrow">SCIENTIFIC SOURCES</span>
+          <h2>Built on <span>verified physics</span></h2>
+          <p>Use these for your assignment’s fact-checking log.</p>
+        </div>
+      </div>
+
+      <div class="ref-grid reveal">
+        <a href="https://www.energy.gov/science/doe-explainsnuclear-fission" target="_blank" rel="noopener"><b>DOE</b><span>DOE Explains: Nuclear Fission</span></a>
+        <a href="https://www.energy.gov/ne/articles/nuclear-101-how-does-nuclear-reactor-work" target="_blank" rel="noopener"><b>DOE</b><span>Nuclear 101: How Does a Reactor Work?</span></a>
+        <a href="https://www.energy.gov/ne/articles/fission-and-fusion-what-difference" target="_blank" rel="noopener"><b>DOE</b><span>Fission and Fusion: What Is the Difference?</span></a>
+        <a href="https://www.energy.gov/ne/history" target="_blank" rel="noopener"><b>DOE</b><span>History of Nuclear Energy</span></a>
+        <a href="https://www-pub.iaea.org/MTCD/Publications/PDF/Pub913e_web.pdf" target="_blank" rel="noopener"><b>IAEA</b><span>INSAG-7: The Chernobyl Accident</span></a>
+        <a href="https://www.iaea.org/topics/response/fukushima-daiichi-nuclear-accident" target="_blank" rel="noopener"><b>IAEA</b><span>Fukushima Daiichi Accident Resources</span></a>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="memeModal" class="meme-modal" aria-hidden="true">
+    <div class="meme-card">
+      <button id="memeClose" aria-label="Close">×</button>
+      <div id="memeEmoji" class="meme-emoji">😎</div>
+      <small>FISSIONQUEST REACTION</small>
+      <h2 id="memeTitle">Well done!</h2>
+      <p id="memeText">Reactor status: emotionally stable.</p>
+      <div id="memeXP">+100 XP</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="brand footer-brand">
+      <img src="favicon.svg" alt="" />
+      <div><strong>FISSION<span>QUEST</span></strong><small>NUCLEAR PHYSICS EXPLORER</small></div>
+    </div>
+    <p>Interactive educational project for UEEP2074 Nuclear Physics.</p>
+    <p class="tiny-note">Simplified simulations are for learning concepts, not operator training or engineering analysis.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
