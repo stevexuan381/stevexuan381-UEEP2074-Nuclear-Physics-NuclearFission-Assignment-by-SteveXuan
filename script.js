@@ -80,7 +80,48 @@ $$(".fact-btn").forEach(b=>b.addEventListener("click",()=>showMeme("🤯","Did y
 
 let audioCtx,nodes=[];$("#musicBtn")?.addEventListener("click",e=>{if(nodes.length){nodes.forEach(n=>{try{n.stop?.()}catch{}});nodes=[];e.target.textContent="♫ Music: Off";return}audioCtx=audioCtx||new (AudioContext||webkitAudioContext)();const master=audioCtx.createGain();master.gain.value=.035;master.connect(audioCtx.destination);[110,164.8,220].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=i?"triangle":"sine";o.frequency.value=f;g.gain.value=i?.18:.5;o.connect(g);g.connect(master);o.start();nodes.push(o)});nodes.push(master);e.target.textContent="♫ Music: On"});
 
-if($("#fireFission")){let busy=false;$("#fireFission").onclick=()=>{if(busy)return;busy=true;$("#fissionStage").classList.add("run");$("#fissionReadout").textContent="STATUS: REACTION";setTimeout(()=>{$("#fissionStage").classList.remove("run");$("#fissionReadout").textContent="STATUS: READY";busy=false;showMeme("💥","U-235 has left the chat","Fission fragments: released. Neutrons: making new plans.",50)},2600)}}
+if($("#fireFission")){
+  let busy=false;
+  const stage=$("#fissionStage");
+  const readout=$("#fissionReadout");
+  const fireBtn=$("#fireFission");
+
+  function resetFissionLab(){
+    stage.classList.remove("run");
+    // Force a style/layout flush so CSS animations can replay reliably.
+    void stage.offsetWidth;
+    readout.textContent="STATUS: READY";
+    fireBtn.disabled=false;
+    busy=false;
+  }
+
+  fireBtn.addEventListener("click",()=>{
+    if(busy)return;
+    busy=true;
+    fireBtn.disabled=true;
+
+    // Always start from a clean animation state.
+    stage.classList.remove("run");
+    void stage.offsetWidth;
+    stage.classList.add("run");
+    readout.textContent="STATUS: NEUTRON ABSORBED";
+
+    setTimeout(()=>{ readout.textContent="STATUS: NUCLEUS DEFORMING"; },650);
+    setTimeout(()=>{ readout.textContent="STATUS: FISSION — ENERGY + NEUTRONS RELEASED"; },1050);
+
+    // The visual sequence completes around 2 s. Use a slightly longer
+    // fallback timer so it resets even if an animation event is interrupted.
+    setTimeout(()=>{
+      resetFissionLab();
+      showMeme(
+        "💥",
+        "Fission complete",
+        "The U-235 nucleus split, fission fragments moved apart, and new neutrons were released.",
+        50
+      );
+    },2350);
+  });
+}
 $$(".inline-choices button").forEach(b=>b.onclick=()=>{if(b.dataset.correct==="true"){b.style.borderColor="var(--green)";$("#quickFeedback").textContent="✓ Correct. Neutrons are electrically neutral, so they are not repelled by the positive nucleus.";$("#quickFeedback").style.color="var(--green)";addXP(20)}else{b.style.borderColor="var(--red)";$("#quickFeedback").textContent="Not quite. Think about electric charge.";$("#quickFeedback").style.color="var(--red)"}});
 
 const comp={
@@ -103,8 +144,56 @@ const tutorRules=[
 [["bwr"],"A BWR boils water directly in the reactor vessel and sends the resulting steam to the turbine."],
 [["waste"],"Used nuclear fuel remains radioactive and generates decay heat, so it requires shielding, cooling and controlled long-term management."]
 ];
-function tutorAnswer(t){t=t.toLowerCase();for(const [keys,a] of tutorRules)if(keys.some(k=>t.includes(k)))return a;return "Try asking about fission, fusion, criticality, moderators, control rods, PWR/BWR, Chernobyl, Fukushima or nuclear waste."}
-function addChat(role,text){const d=document.createElement("div");d.className="msg "+role;d.innerHTML=`<b>${role==="bot"?"Nucleus Tutor":"You"}</b><p></p>`;d.querySelector("p").textContent=text;$("#chatLog").appendChild(d);$("#chatLog").scrollTop=$("#chatLog").scrollHeight}
-$("#chatForm")?.addEventListener("submit",e=>{e.preventDefault();const v=$("#chatInput").value.trim();if(!v)return;addChat("user",v);$("#chatInput").value="";setTimeout(()=>addChat("bot",tutorAnswer(v)),200)});$$(".suggestion").forEach(b=>b.onclick=()=>{addChat("user",b.textContent);setTimeout(()=>addChat("bot",tutorAnswer(b.textContent)),200)});
+function tutorAnswer(t){
+  t=t.toLowerCase();
+  for(const [keys,a] of tutorRules){
+    if(keys.some(k=>t.includes(k))) return a;
+  }
+  const lang=localStorage.getItem("fqLang")||"en";
+  if(lang==="zh") return "我目前是内置的离线导师。你可以问我：核裂变、核聚变、临界状态、慢化剂、控制棒、PWR/BWR、切尔诺贝利、福岛或核废料。";
+  if(lang==="ms") return "Saya ialah tutor luar talian terbina dalam. Cuba tanya tentang pembelahan, pelakuran, kritikaliti, moderator, rod kawalan, PWR/BWR, Chernobyl, Fukushima atau sisa nuklear.";
+  return "I’m the built-in offline tutor. Try asking about fission, fusion, criticality, moderators, control rods, PWR/BWR, Chernobyl, Fukushima or nuclear waste.";
+}
+
+function addChat(role,text,extraClass=""){
+  const log=$("#chatLog");
+  if(!log) return null;
+  const d=document.createElement("div");
+  d.className=`msg ${role} ${extraClass}`.trim();
+  d.innerHTML=`<b>${role==="bot"?"Nucleus Tutor":"You"}</b><p></p>`;
+  d.querySelector("p").textContent=text;
+  log.appendChild(d);
+  requestAnimationFrame(()=>{ log.scrollTop=log.scrollHeight; });
+  return d;
+}
+
+function askTutor(text){
+  const v=(text||"").trim();
+  if(!v) return;
+
+  addChat("user",v);
+  const typing=addChat("bot","Thinking","typing");
+
+  setTimeout(()=>{
+    typing?.remove();
+    addChat("bot",tutorAnswer(v));
+  },450);
+}
+
+const chatForm=$("#chatForm");
+const chatInput=$("#chatInput");
+
+chatForm?.addEventListener("submit",e=>{
+  e.preventDefault();
+  const v=chatInput?.value.trim()||"";
+  if(!v) return;
+  chatInput.value="";
+  askTutor(v);
+  chatInput.focus();
+});
+
+$$(".suggestion").forEach(b=>{
+  b.addEventListener("click",()=>askTutor(b.textContent));
+});
 
 const star=$("#starField");if(star){const c=star.getContext("2d");let ss=[];function rs(){star.width=innerWidth;star.height=innerHeight;ss=Array.from({length:Math.min(140,Math.floor(innerWidth/8))},()=>({x:Math.random()*star.width,y:Math.random()*star.height,r:Math.random()*1.3+.3,v:Math.random()*.16+.03}))}function dr(){c.clearRect(0,0,star.width,star.height);for(const s of ss){s.y-=s.v;if(s.y<0)s.y=star.height;c.beginPath();c.fillStyle=`rgba(88,228,255,${.12+s.r*.15})`;c.arc(s.x,s.y,s.r,0,Math.PI*2);c.fill()}requestAnimationFrame(dr)}addEventListener("resize",rs);rs();dr()}

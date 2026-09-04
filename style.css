@@ -274,3 +274,161 @@ body::after{
     height:180px;
   }
 }
+
+
+/* ===== V4.2 FISSION LAB FIX =====
+   Current HTML uses .outn/.fa/.fb/.burst.
+   These rules intentionally match those exact classes.
+*/
+.fission-stage .outn{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:radial-gradient(circle at 30% 30%,#fff,#8da4b0 35%,#33434b);
+  color:white;
+  font-size:11px;
+  font-weight:800;
+  box-shadow:0 0 15px var(--cyan);
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  opacity:0;
+  z-index:4;
+}
+
+.fission-stage .frag{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:68px;
+  height:68px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:radial-gradient(circle,#ffd066,#b35e20);
+  font-weight:900;
+  opacity:0;
+  z-index:4;
+  box-shadow:0 0 22px rgba(255,159,80,.28);
+}
+
+.fission-stage .burst{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:var(--yellow);
+  box-shadow:0 0 30px var(--yellow);
+  opacity:0;
+  z-index:3;
+}
+
+.fission-stage.run .fa{animation:fragA 1.30s .70s ease-out forwards}
+.fission-stage.run .fb{animation:fragB 1.30s .70s ease-out forwards}
+.fission-stage.run .n1{animation:n1 1.30s .70s ease-out forwards}
+.fission-stage.run .n2{animation:n2 1.30s .70s ease-out forwards}
+.fission-stage.run .n3{animation:n3 1.30s .70s ease-out forwards}
+.fission-stage.run .burst{animation:burst .82s .54s ease-out forwards}
+
+/* Ensure reset state is restored after every run. */
+.fission-stage:not(.run) .frag,
+.fission-stage:not(.run) .outn,
+.fission-stage:not(.run) .burst{
+  animation:none !important;
+  opacity:0;
+}
+
+/* ---------------------------
+   V4.2 TUTOR / CHAT FIX
+--------------------------- */
+.tutor-wrap > aside{
+  padding:24px;
+  border-right:1px solid rgba(255,255,255,.06);
+  background:linear-gradient(180deg,rgba(88,228,255,.025),rgba(255,255,255,.01));
+}
+
+.tutor-wrap > aside h3{
+  margin-top:13px;
+  margin-bottom:4px;
+}
+
+.tutor-wrap > aside .suggestion{
+  display:block;
+  width:100%;
+  margin-top:8px;
+}
+
+#chatForm{
+  display:flex;
+  gap:9px;
+  padding:14px;
+  border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(3,9,13,.48);
+}
+
+#chatInput{
+  flex:1;
+  min-width:0;
+  border:1px solid var(--border);
+  background:#071219;
+  color:var(--text);
+  border-radius:10px;
+  padding:12px 14px;
+  outline:none;
+}
+
+#chatInput:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(88,228,255,.06);
+}
+
+#chatForm .btn{
+  flex:0 0 auto;
+}
+
+.chat-log{
+  min-height:350px;
+  max-height:520px;
+  overflow-y:auto;
+  scroll-behavior:smooth;
+}
+
+.msg{
+  overflow-wrap:anywhere;
+}
+
+.msg.typing p::after{
+  content:"";
+  display:inline-block;
+  width:20px;
+  height:6px;
+  margin-left:6px;
+  background:
+    radial-gradient(circle,#58e4ff 2px,transparent 3px) 0 50%/7px 7px repeat-x;
+  animation:typingPulse .8s linear infinite;
+}
+
+@keyframes typingPulse{
+  0%{opacity:.25;transform:translateY(0)}
+  50%{opacity:1;transform:translateY(-1px)}
+  100%{opacity:.25;transform:translateY(0)}
+}
+
+@media(max-width:800px){
+  .tutor-wrap > aside{
+    border-right:0;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+}
+
+@media(max-width:520px){
+  #chatForm{flex-direction:column}
+  #chatForm .btn{width:100%}
+}
